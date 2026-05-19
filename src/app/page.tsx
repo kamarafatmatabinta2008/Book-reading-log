@@ -1,4 +1,6 @@
+import Link from "next/link";
 import DemoContainer from "@/components/DemoContainer";
+import NavAuth from "@/components/NavAuth";
 import { getTrendingBooks } from "@/app/actions/leaderboard";
 
 export default async function Home() {
@@ -13,9 +15,9 @@ export default async function Home() {
             <span className="text-2xl">📚</span>
             <h1 className="text-xl font-black tracking-tighter">READ_MATRIX</h1>
           </div>
-          <div className="flex gap-4">
+          <div className="flex gap-4 items-center">
             <button className="px-4 py-2 text-sm font-medium hover:text-blue-600 transition-colors">Library</button>
-            <button className="px-4 py-2 text-sm font-bold bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-full">Sign In</button>
+            <NavAuth />
           </div>
         </div>
       </nav>
@@ -76,9 +78,12 @@ export default async function Home() {
               <p className="text-blue-100 text-sm mb-6">
                 Create an account to save your library, track habits, and compete on the global matrix.
               </p>
-              <button className="w-full bg-white text-blue-600 py-3 rounded-xl font-black shadow-lg">
+              <Link
+                href="/signup"
+                className="block w-full text-center bg-white text-blue-600 py-3 rounded-xl font-black shadow-lg hover:bg-blue-50 transition-colors"
+              >
                 Create Free Account
-              </button>
+              </Link>
             </div>
           </aside>
 
