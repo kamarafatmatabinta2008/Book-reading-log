@@ -3,12 +3,14 @@
 import React, { useState } from 'react';
 import { searchOpenLibrary, BookResult } from '@/app/actions/google-books';
 import FillingBook from '@/components/FillingBook';
+import ReaderPage from '@/components/ReaderPage';
 
 const DemoContainer = () => {
   const [query, setQuery] = useState('');
   const [results, setResults] = useState<BookResult[]>([]);
   const [selectedBook, setSelectedBook] = useState<BookResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [isReading, setIsReading] = useState(false);
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,6 +23,11 @@ const DemoContainer = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleReadBook = (book: BookResult) => {
+    setSelectedBook(book);
+    setIsReading(true);
   };
 
   return (
@@ -49,7 +56,7 @@ const DemoContainer = () => {
           {results.map((book, idx) => (
             <div 
               key={idx}
-              onClick={() => setSelectedBook(book)}
+              onClick={() => handleReadBook(book)}
               className="p-4 border rounded-xl hover:border-blue-500 cursor-pointer transition-colors flex gap-4 items-start bg-gray-50 dark:bg-gray-900"
             >
               {book.cover_url ? (
@@ -104,6 +111,13 @@ const DemoContainer = () => {
           </div>
         )}
       </section>
+
+      {isReading && selectedBook && (
+        <ReaderPage 
+          bookTitle={selectedBook.title} 
+          onClose={() => setIsReading(false)} 
+        />
+      )}
     </div>
   );
 };
