@@ -9,28 +9,31 @@ export interface BookResult {
   needs_page_estimation: boolean;
 }
 
-export async function searchGoogleBooks(query: string): Promise<BookResult[]> {
+export async function searchOpenLibrary(query: string): Promise<BookResult[]> {
   if (!query) return [];
 
   const response = await fetch(
-    `https://www.googleapis.com/books/v1/volumes?q=${encodeURIComponent(query)}&maxResults=10`
+    `https://openlibrary.org/search.json?q=${encodeURIComponent(query)}&limit=10`
   );
 
   if (!response.ok) {
-    throw new Error('Failed to fetch from Google Books API');
+    throw new Error('Failed to fetch from Open Library API');
   }
 
   const data = await response.json();
 
-  return (data.items || []).map((item: any) => {
-    const info = item.volumeInfo;
-    const pageCount = info.pageCount || 0;
+  return (data.docs || []).map((doc: any) => {
+    const pageCount = doc.number_of_pages_median ?? null;
+    const coverUrl = doc.cover_i
+      ? `https://covers.openlibrary.org/b/id/${doc.cover_i}-M.jpg`
+      : '';
 
     return {
-      title: info.title || "Untitled Document",
-      author: info.authors ? info.authors.join(", ") : "Unknown Author",
-      cover_url: info.imageLinks?.thumbnail || "", // Empty string to handle fallback in UI
-      page_count: pageCount > 0 ? pageCount : null,
+      id: doc.key || doc.edition_key?.[0] || doc.title,
+      title: doc.title || 'Untitled Document',
+      author: doc.author_name ? doc.author_name.join(', ') : 'Unknown Author',
+      cover_url: coverUrl,
+      page_count: typeof pageCount === 'number' && pageCount > 0 ? pageCount : null,
       needs_page_estimation: !pageCount || pageCount === 0,
     };
   });

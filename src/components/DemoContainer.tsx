@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState } from 'react';
-import { searchGoogleBooks, BookResult } from '@/app/actions/google-books';
+import { searchOpenLibrary, BookResult } from '@/app/actions/google-books';
 import FillingBook from '@/components/FillingBook';
 
 const DemoContainer = () => {
@@ -14,7 +14,7 @@ const DemoContainer = () => {
     e.preventDefault();
     setIsLoading(true);
     try {
-      const books = await searchGoogleBooks(query);
+      const books = await searchOpenLibrary(query);
       setResults(books);
     } catch (error) {
       console.error(error);
