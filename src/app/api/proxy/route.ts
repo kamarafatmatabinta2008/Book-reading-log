@@ -13,10 +13,23 @@ const HOP_BY_HOP_HEADERS = new Set([
 
 function getAllowedHosts(): string[] {
   const raw = process.env.PROXY_ALLOWED_HOSTS ?? "";
-  return raw
+  const list = raw
     .split(",")
     .map((s) => s.trim())
     .filter(Boolean);
+
+  // In development, allow a sensible default list to make local testing easier
+  if (list.length === 0 && process.env.NODE_ENV !== 'production') {
+    return [
+      'gutendex.com',
+      'www.gutenberg.org',
+      'gutenberg.org',
+      'openlibrary.org',
+      'covers.openlibrary.org',
+    ];
+  }
+
+  return list;
 }
 
 function isHostAllowed(target: URL, allowedHosts: string[]): boolean {
@@ -35,6 +48,10 @@ function buildForwardHeaders(req: Request): Record<string, string> {
     out[key] = value;
   }
   out["x-forwarded-by"] = "nextjs-proxy";
+  // Set a default User-Agent if not present (some servers require this)
+  if (!out["user-agent"]) {
+    out["user-agent"] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36";
+  }
   return out;
 }
 
@@ -87,7 +104,7 @@ async function forwardRequest(req: Request): Promise<Response> {
   const init: RequestInit = {
     method: req.method,
     headers: buildForwardHeaders(req),
-    redirect: "manual",
+    redirect: "follow",
   };
 
   if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method.toUpperCase())) {

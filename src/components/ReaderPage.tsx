@@ -68,9 +68,9 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
         } else {
           setReadableUrl(url);
           const formats = foundBook.formats;
-          if (formats['text/html']) setMimeType('text/html');
+          if (formats['text/plain']) setMimeType('text/plain');
           else if (formats['application/epub+zip']) setMimeType('application/epub+zip');
-          else setMimeType('text/plain');
+          else setMimeType('text/html');
         }
       } catch (err) {
         setError('An error occurred while loading the book.');

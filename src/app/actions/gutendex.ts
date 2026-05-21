@@ -42,10 +42,11 @@ export async function searchGutendex(title: string): Promise<GutendexBook | null
 export async function getReadableUrl(book: GutendexBook): Promise<string | null> {
   const formats = book.formats;
   
-  // Priority: HTML -> EPUB -> Plain Text
-  if (formats['text/html']) return formats['text/html'];
-  if (formats['application/epub+zip']) return formats['application/epub+zip'];
+  // Priority: Plain Text (most reliable) -> EPUB -> HTML
+  // Text/plain is most reliable as it's less likely to be moved/deleted on Gutenberg
   if (formats['text/plain']) return formats['text/plain'];
+  if (formats['application/epub+zip']) return formats['application/epub+zip'];
+  if (formats['text/html']) return formats['text/html'];
   
   return null;
 }
