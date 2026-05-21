@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import ResponsiveNav from '@/components/ResponsiveNav';
 import ReadingWorkspace from '@/components/ReadingWorkspace';
 
@@ -7,7 +8,9 @@ export default function Home() {
       <ResponsiveNav />
 
       <main className="max-w-7xl mx-auto px-4 py-12">
-        <ReadingWorkspace />
+        <Suspense fallback={<div className="py-20 text-center text-sm text-gray-500 dark:text-gray-400">Loading workspace...</div>}>
+          <ReadingWorkspace />
+        </Suspense>
       </main>
 
       <footer className="max-w-7xl mx-auto px-4 py-24 border-t border-gray-200 dark:border-gray-800 mt-24">
