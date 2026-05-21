@@ -18,7 +18,9 @@ export default function NavAuthClient() {
       setUser(user);
     };
 
-    const { subscription } = supabase.auth.onAuthStateChange((_event, session) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
     });
 
