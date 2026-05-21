@@ -27,7 +27,7 @@ const BookReader: React.FC<BookReaderProps> = ({ url, mimeType, title, onProgres
     if (!viewerRef.current) return;
 
     if (mimeType === 'application/epub+zip') {
-      const book = ePub.Book.create(url);
+      const book = ePub(url);
       const rendition = book.renderTo(viewerRef.current, {
         width: '100%',
         height: '100%',
