@@ -3,7 +3,7 @@ import AuthShell from "@/components/AuthShell";
 import SignUpForm from "@/components/SignUpForm";
 
 export const metadata = {
-  title: "Sign up | READ_MATRIX",
+  title: "Sign up | REVO",
 };
 
 export default function SignUpPage() {

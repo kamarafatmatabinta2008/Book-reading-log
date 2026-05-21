@@ -18,6 +18,10 @@ const FillingBook: React.FC<FillingBookProps> = ({
   const [currentPage, setCurrentPage] = useState(initialPage);
   const [showFeedbackModal, setShowFeedbackModal] = useState(false);
 
+  useEffect(() => {
+    setCurrentPage(initialPage);
+  }, [initialPage]);
+
   // Input validation
   const validatedPage = useMemo(() => {
     if (currentPage < 0) return 0;

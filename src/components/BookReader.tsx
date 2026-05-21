@@ -54,13 +54,14 @@ const BookReader: React.FC<BookReaderProps> = ({ url, mimeType, title, onProgres
     } else if (mimeType === 'text/html') {
       // Use an iframe for HTML to avoid CSS conflicts and provide a cleaner reading experience
       // Note: We cannot easily change font size inside a cross-origin iframe due to security restrictions
-      viewerRef.current!.innerHTML = `<iframe src="${url}" class="w-full h-full min-h-[80vh] border-none rounded-lg" style="width: 100%; height: 80vh;"></iframe>`;
+      viewerRef.current!.innerHTML = `<iframe src="${url}" class="w-full h-full border-none rounded-lg" style="width: 100%; height: 100%;"></iframe>`;
     } else {
       fetch(url)
         .then(res => res.text())
         .then(text => {
           viewerRef.current!.innerText = text;
           viewerRef.current!.style.whiteSpace = 'pre-wrap';
+          viewerRef.current!.style.minHeight = '100%';
         });
     }
   }, [url, mimeType, title, onProgressChange, fontSize]);
@@ -96,10 +97,10 @@ const BookReader: React.FC<BookReaderProps> = ({ url, mimeType, title, onProgres
       </div>
 
       {/* Reader Area */}
-      <div className="flex-1 overflow-auto p-4 md:p-12">
+      <div className="flex-1 overflow-hidden p-4 md:p-12">
         <div 
           ref={viewerRef} 
-          className="max-w-3xl mx-auto transition-all duration-200"
+          className="max-w-3xl mx-auto h-full transition-all duration-200"
           style={{ fontSize: `${fontSize}px` }}
         />
       </div>

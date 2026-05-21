@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "READ_MATRIX",
+  title: "REVO",
   description: "Your reading, synchronized.",
 };
 

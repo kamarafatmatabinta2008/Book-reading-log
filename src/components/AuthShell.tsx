@@ -14,7 +14,7 @@ export default function AuthShell({ title, subtitle, children, footer }: AuthShe
         <div className="max-w-lg mx-auto px-4 h-16 flex items-center">
           <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
             <span className="text-2xl">📚</span>
-            <span className="text-xl font-black tracking-tighter">READ_MATRIX</span>
+            <span className="text-xl font-black tracking-tighter">REVO</span>
           </Link>
         </div>
       </nav>

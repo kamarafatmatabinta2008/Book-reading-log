@@ -3,7 +3,7 @@ import AuthShell from "@/components/AuthShell";
 import LoginForm from "@/components/LoginForm";
 
 export const metadata = {
-  title: "Sign in | READ_MATRIX",
+  title: "Sign in | REVO",
 };
 
 type LoginPageProps = {

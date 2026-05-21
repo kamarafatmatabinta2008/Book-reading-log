@@ -15,7 +15,40 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
   const [readableUrl, setReadableUrl] = useState<string | null>(null);
   const [mimeType, setMimeType] = useState<string>('');
   const [isLoading, setIsLoading] = useState(true);
+  const [progress, setProgress] = useState(12);
+  const [stage, setStage] = useState('Finding the best free edition...');
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    let interval: number | null = null;
+
+    if (isLoading) {
+      setProgress(12);
+      setStage('Finding the best free edition...');
+      interval = window.setInterval(() => {
+        setProgress((current) => {
+          if (current >= 92) {
+            return current;
+          }
+          return Math.min(current + Math.floor(Math.random() * 8) + 4, 92);
+        });
+      }, 180);
+    }
+
+    return () => {
+      if (interval !== null) window.clearInterval(interval);
+    };
+  }, [isLoading]);
+
+  useEffect(() => {
+    if (progress <= 35) {
+      setStage('Finding the best free edition...');
+    } else if (progress <= 70) {
+      setStage('Preparing the reader experience...');
+    } else if (progress < 100) {
+      setStage('Almost ready — opening your book...');
+    }
+  }, [progress]);
 
   useEffect(() => {
     async function fetchBook() {
@@ -34,7 +67,6 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
           setError('No readable format found for this book.');
         } else {
           setReadableUrl(url);
-          // Determine mime type based on URL extension or Gutendex format keys
           const formats = foundBook.formats;
           if (formats['text/html']) setMimeType('text/html');
           else if (formats['application/epub+zip']) setMimeType('application/epub+zip');
@@ -43,7 +75,11 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
       } catch (err) {
         setError('An error occurred while loading the book.');
       } finally {
-        setIsLoading(false);
+        setProgress(100);
+        setStage('Opening your reader...');
+        setTimeout(() => {
+          setIsLoading(false);
+        }, 200);
       }
     }
 
@@ -52,10 +88,39 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white dark:bg-gray-950">
-        <div className="flex flex-col items-center gap-4">
-          <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-          <p className="text-lg font-medium">Searching Gutendex for readable version...</p>
+      <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/95 dark:bg-gray-950/95 p-6 backdrop-blur-sm">
+        <div className="w-full max-w-md rounded-[2rem] border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 shadow-[0_40px_120px_rgba(15,23,42,0.2)] p-8">
+          <div className="flex flex-col items-center gap-6 text-center">
+            <div className="flex h-20 w-20 items-center justify-center rounded-full bg-blue-600 text-white shadow-lg shadow-blue-500/20">
+              <span className="text-3xl">📗</span>
+            </div>
+
+            <div>
+              <p className="text-sm uppercase tracking-[0.3em] text-blue-600 dark:text-blue-300">Book Reader</p>
+              <h2 className="mt-3 text-3xl font-black text-gray-900 dark:text-white">Preparing your chapter</h2>
+            </div>
+
+            <div className="space-y-4">
+              <div className="rounded-3xl bg-gray-100 dark:bg-gray-800 p-4 text-left">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">{stage}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">Please wait while we open the reader.</p>
+              </div>
+              <div className="rounded-3xl bg-gray-100 dark:bg-gray-800 p-4 text-left">
+                <p className="text-sm font-semibold text-gray-900 dark:text-white">{progress}% complete</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">This may take a moment for larger books.</p>
+              </div>
+            </div>
+
+            <div className="w-full">
+              <div className="h-2.5 rounded-full bg-gray-200 dark:bg-gray-800 overflow-hidden">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-blue-600 to-cyan-500 transition-all duration-500"
+                  style={{ width: `${progress}%` }}
+                ></div>
+              </div>
+              <p className="mt-3 text-xs uppercase tracking-[0.24em] text-gray-500 dark:text-gray-400">loading reader…</p>
+            </div>
+          </div>
         </div>
       </div>
     );
