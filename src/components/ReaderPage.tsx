@@ -165,10 +165,13 @@ const ReaderPage = ({ bookTitle, onClose }: ReaderPageProps) => {
         <span className="text-sm font-medium text-gray-400">{book?.title}</span>
       </div>
       <div className="flex-1 overflow-hidden">
-        <BookReader 
-          url={readableUrl!} 
-          mimeType={mimeType} 
-          title={book?.title || 'Reading'} 
+        {
+          // Use a proxied URL so production can load remote resources without CORS/X-Frame blocks
+        }
+        <BookReader
+          url={readableUrl ? `/api/proxy?url=${encodeURIComponent(readableUrl)}` : ''}
+          mimeType={mimeType}
+          title={book?.title || 'Reading'}
         />
       </div>
     </div>

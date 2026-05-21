@@ -52,9 +52,22 @@ const BookReader: React.FC<BookReaderProps> = ({ url, mimeType, title, onProgres
         book.destroy();
       };
     } else if (mimeType === 'text/html') {
-      // Use an iframe for HTML to avoid CSS conflicts and provide a cleaner reading experience
-      // Note: We cannot easily change font size inside a cross-origin iframe due to security restrictions
-      viewerRef.current!.innerHTML = `<iframe src="${url}" class="w-full h-full border-none rounded-lg" style="width: 100%; height: 100%;"></iframe>`;
+      // Use an iframe for HTML to avoid CSS conflicts and provide a cleaner reading experience.
+      // Create the iframe element and set its src to the proxied URL so headers/CSP are controlled server-side.
+      viewerRef.current!.innerHTML = '';
+      const iframe = document.createElement('iframe');
+      iframe.src = url;
+      iframe.className = 'w-full h-full border-none rounded-lg';
+      iframe.style.width = '100%';
+      iframe.style.height = '100%';
+      iframe.style.border = 'none';
+      iframe.setAttribute('referrerpolicy', 'no-referrer');
+      viewerRef.current!.appendChild(iframe);
+      return () => {
+        try {
+          iframe.remove();
+        } catch {}
+      };
     } else {
       fetch(url)
         .then(res => res.text())
